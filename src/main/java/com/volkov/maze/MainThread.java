@@ -14,15 +14,19 @@ public class MainThread extends JFrame implements Runnable {
 
     private int[][] map = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 0, 2, 0, 5, 0, 8, 0, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 0, 3, 0, 6, 0, 0, 0, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 0, 4, 0, 7, 0, 0, 0, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+            {1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 1, 1, 1, 0, 1, 1},
+            {1, 1, 1, 1, 1, 1, 4, 0, 4, 1},
+            {4, 4, 4, 4, 4, 4, 4, 0, 4, 4},
+            {7, 0, 0, 0, 0, 0, 0, 0, 0, 7},
+            {7, 0, 3, 3, 3, 3, 3, 0, 0, 7},
+            {7, 0, 3, 0, 0, 0, 3, 0, 0, 7},
+            {7, 0, 3, 0, 0, 0, 3, 0, 0, 7},
+            {7, 0, 3, 3, 0, 3, 3, 0, 0, 7},
+            {7, 0, 0, 0, 0, 0, 0, 0, 0, 7},
+            {7, 4, 4, 4, 4, 4, 4, 4, 4, 4}
     };
 
     /*Если заливать стены сплошным цветом, то достаточно просто
@@ -62,7 +66,7 @@ public class MainThread extends JFrame implements Runnable {
     * Сначала мы рисуем в буфере, а затем этот буфер выводится на экран.
     * Это позволяет заметно увеличить плавность картинки, а если стены
     * текстурированы, то без буфера не обойтись*/
-    private void update(){
+    private void redraw(){
         BufferStrategy strategy = getBufferStrategy();
         if(strategy == null){
             createBufferStrategy(2);
@@ -75,26 +79,29 @@ public class MainThread extends JFrame implements Runnable {
     }
 
     public void run() {
-        long lastTime = System.currentTimeMillis();
+        long start, sleepTime;
         final int frameTime = 1000 / 60;
-        int difference;
 
+        //TODO: Оптимизировать цикл, добавить пропуск кадров
         while(isRunning){
-            long currentTime = System.currentTimeMillis();
-            difference = (int)(currentTime - lastTime);
-            if(difference < frameTime){
+            start = System.currentTimeMillis();
+
+            try{
+                camera.update(map);
+                redraw();
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+
+            sleepTime = start + frameTime - System.currentTimeMillis();
+            //System.out.println(sleepTime);
+
+            if(sleepTime > 0){
                 try{
-                    Thread.sleep(difference);
+                    Thread.sleep(sleepTime);
                 } catch(InterruptedException e){
                     e.printStackTrace();
                 }
-            }
-            lastTime = currentTime;
-            try{
-                camera.update(map);
-                update();
-            } catch(Exception e){
-                e.printStackTrace();
             }
         }
     }

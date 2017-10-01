@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 public class Camera implements KeyListener {
+    //TODO: Сделать скорости зависимыми от времени отрисовки
     private final double MOVE_SPEED = 0.05;
     private final double ROTATION_SPEED = 5;
     ArrayList<int[]> textures;
@@ -149,6 +150,15 @@ public class Camera implements KeyListener {
                 if (startOffset == 0) texY = scale(y, drawStart, drawEnd, texWH - 1);
                 else texY = scale(y, startOffset, endOffset, texWH - 1);
                 int color = texture[texWH * texY + texX];
+                /*Усилим эффект трёхмерности окружения: сделаем цвета на "горизонтальных"
+                * или "вертикальных" сторонах темнее.
+                * В такие моменты отсутствие двоичных литералов начинает бесить.
+                * Самый простой способ сделать цвет темнее - разделить каждую компоненту
+                * на 2 битовым сдвигом. Старшие биты необходимо обнулить:
+                * 8355711 это 01111111 01111111 01111111 01111111 в двоичном представлении.
+                * Помним, что первый байт - альфа-канал, все цвета должны быть непрозрачными.
+                * -16777216: первый байт - единицы, остальные - нули*/
+                if(side == 0) color = (color >> 1) & 8355711 | -16777216;
                 buffer[screenWidth * y + i] = color;
             }
         }
@@ -201,10 +211,6 @@ public class Camera implements KeyListener {
         }
 
         if(right){
-            oldDirX = dirX;
-            oldDirY = dirY;
-            oldPlaneX = planeX;
-            oldPlaneY = planeY;
             dirX = oldDirX * Math.cos(Math.toRadians(ROTATION_SPEED)) - oldDirY * Math.sin(Math.toRadians(ROTATION_SPEED));
             dirY = oldDirX * Math.sin(Math.toRadians(ROTATION_SPEED)) + oldDirY * Math.cos(Math.toRadians(ROTATION_SPEED));
             planeX = oldPlaneX * Math.cos(Math.toRadians(ROTATION_SPEED)) - oldPlaneY * Math.sin(Math.toRadians(ROTATION_SPEED));
