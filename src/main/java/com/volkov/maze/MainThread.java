@@ -12,22 +12,7 @@ public class MainThread extends JFrame implements Runnable {
 
     private int screenWidth, screenHeight;
 
-    private int[][] map = {
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 1, 1, 1, 0, 1, 1},
-            {1, 1, 1, 1, 1, 1, 4, 0, 4, 1},
-            {4, 4, 4, 4, 4, 4, 4, 0, 4, 4},
-            {7, 0, 0, 0, 0, 0, 0, 0, 0, 7},
-            {7, 0, 3, 3, 3, 3, 3, 0, 0, 7},
-            {7, 0, 3, 0, 0, 0, 3, 0, 0, 7},
-            {7, 0, 3, 0, 0, 0, 3, 0, 0, 7},
-            {7, 0, 3, 3, 0, 3, 3, 0, 0, 7},
-            {7, 0, 0, 0, 0, 0, 0, 0, 0, 7},
-            {7, 4, 4, 4, 4, 4, 4, 4, 4, 4}
-    };
+    private int[][] map;
 
     /*Если заливать стены сплошным цветом, то достаточно просто
     * рисовать на экране вертикальные линии нужной высоты, независимо
@@ -49,6 +34,10 @@ public class MainThread extends JFrame implements Runnable {
         camera = new Camera(1.5, 1.5, screenWidth, screenHeight);
         isRunning = true;
 
+        Generator.generate(10, 10);
+        map = Generator.toArray();
+
+
         addKeyListener(camera);
 
         setSize(screenWidth, screenHeight);
@@ -64,7 +53,7 @@ public class MainThread extends JFrame implements Runnable {
 
     /*Двойная буферизация.
     * Сначала мы рисуем в буфере, а затем этот буфер выводится на экран.
-    * Это позволяет заметно увеличить плавность картинки, а если стены
+    * Это позволяет заметно увеличить плавность отрисовки, а если стены
     * текстурированы, то без буфера не обойтись*/
     private void redraw(){
         BufferStrategy strategy = getBufferStrategy();
