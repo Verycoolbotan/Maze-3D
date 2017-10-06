@@ -1,5 +1,6 @@
 package com.volkov.maze;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.ArrayList;
 
@@ -74,8 +75,7 @@ public class Generator {
     public static int[][] toArray(){
         //Помним, что стенки у нас толстые
         int[][] result = new int[2 * ySize + 1][2 * xSize + 1];
-
-        //Сначала клетки разделены стенками
+        //Инициализируем
         for(int i = 0; i < result.length; i++){
             for(int j = 0; j < result[0].length; j++){
                 if(i % 2 == 0) result[i][j] = 1;
@@ -83,18 +83,14 @@ public class Generator {
             }
         }
 
-        //Теперь убираем стенки в соответствии с тем, что мы нагенерировали
         for(int i = 0; i < ySize; i++){
             for(int j = 0; j < xSize; j++){
-                if(!map[i][j].isRightWall()){
-                    result[i + 1][j + 2] = 0;
-                }
-                if(!map[i][j].isDownWall()){
-                    result[i + 2][j + 1] = 0;
-                }
+                if(!map[i][j].isRightWall()) result[2 * i + 1][2 * j + 2] = 0;
+                if(!map[i][j].isDownWall()) result[2 * i + 2][2 * j + 1] = 0;
             }
         }
-        System.out.println("Успешный перевод в массив:");
+
+        System.out.println("Массив сгенерирован:");
         for(int i = 0; i < result.length; i++){
             for(int j = 0; j < result[0].length; j++){
                 System.out.print(result[i][j]);
