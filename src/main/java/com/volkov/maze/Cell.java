@@ -6,17 +6,22 @@ import java.util.Collections;
 //Класс упрощает обмен данными о состоянии клетки в лабиринте
 public class Cell {
     public static final int VISITED = 1;
-    public static final int NOT_VISITED = 0;
+    public static final int UNVISITED = 0;
 
     private int y, x;
     private int type;
     private int status;
 
-    public Cell(int y, int x, int type){
+    public Cell(int y, int x, int type, int status){
         this.y = y;
         this.x = x;
         this.type = type;
-        this.status = NOT_VISITED;
+        this.status = status;
+    }
+
+    @Override
+    public String toString(){
+        return "(" + y + ", " + x + ")";
     }
 
     public int getX() {
@@ -50,6 +55,8 @@ public class Cell {
         if(y > 1) neighbours.add(maze[y - 1][x]);
         if(y < (maze.length - 2)) neighbours.add(maze[y + 2][x]);
         Collections.shuffle(neighbours);
+
+        for(Cell cell:neighbours) System.out.println(cell.toString());
         return neighbours;
     }
 }
