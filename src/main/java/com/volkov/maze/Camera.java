@@ -32,7 +32,7 @@ public class Camera implements KeyListener {
     /*Начинается мясо, ой, то есть волшебство. Собственно здесь и происходит
     * трассировка луча и обновление значений в экранном буфере. Меня конкретно
     * смущает объём получившегося метода*/
-    public void raycast(int[][] map, int[] buffer) throws ArrayIndexOutOfBoundsException {
+    public void raycast(Cell[][] map, int[] buffer) throws ArrayIndexOutOfBoundsException {
 
         //Чистим буфер перед отрисовкой кадра
         for (int i = 0; i < buffer.length; i++) {
@@ -89,7 +89,7 @@ public class Camera implements KeyListener {
             }
 
             //Трассируем луч до тех пор, пока не встретим стену.
-            while (map[mapX][mapY] == 0) {
+            while (map[mapX][mapY].getType() == 0) {
                 //Прыгаем к следующему квадрату только В ОДНОМ из направлений
                 if (sideDistX < sideDistY) {
                     sideDistX += deltaDistX;
@@ -125,7 +125,7 @@ public class Camera implements KeyListener {
             }
 
             //Теперь можно использовать текстуру из нулевой ячейки массива
-            int texNum = map[mapX][mapY] - 1;
+            int texNum = map[mapX][mapY].getType() - 1;
             int[] texture = textures.get(texNum);
 
             /*Точная координата пересечения луча и стены.
@@ -158,7 +158,7 @@ public class Camera implements KeyListener {
                 * 8355711 это 01111111 01111111 01111111 01111111 в двоичном представлении.
                 * Помним, что первый байт - альфа-канал, все цвета должны быть непрозрачными.
                 * -16777216: первый байт - единицы, остальные - нули*/
-                if(side == 0) color = (color >> 1) & 8355711 | -16777216;
+                if (side == 0) color = (color >> 1) & 8355711 | -16777216;
                 buffer[screenWidth * y + i] = color;
             }
         }
@@ -169,7 +169,8 @@ public class Camera implements KeyListener {
     * рисую прямо на JFrame, который наследуется не от JComponent,
     * то использовать его не получится*/
 
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     public void keyPressed(KeyEvent e) {
         if ((e.getKeyCode() == KeyEvent.VK_W))
@@ -180,6 +181,8 @@ public class Camera implements KeyListener {
             backward = true;
         if ((e.getKeyCode() == KeyEvent.VK_D))
             right = true;
+        /*if ((e.getKeyCode() == KeyEvent.VK_H))
+            PathFinder.findPath();*/
     }
 
     public void keyReleased(KeyEvent e) {
@@ -193,30 +196,30 @@ public class Camera implements KeyListener {
             right = false;
     }
 
-    public void update(int[][] map) throws ArrayIndexOutOfBoundsException{
+    public void update(Cell[][] map) throws ArrayIndexOutOfBoundsException {
         //Я долго не мог понять, почему же не получается повернуть камеру
         double oldDirX = dirX;
         double oldDirY = dirY;
         double oldPlaneX = planeX;
         double oldPlaneY = planeY;
 
-        if(forward){
+        if (forward) {
             //Перемещаемся, если в заданном направлении нет стен
-            if(map[(int)(posX + dirX * MOVE_SPEED)][(int)(posY)] == 0) posX += dirX * MOVE_SPEED;
-            if(map[(int)(posX)][(int)(posY + dirY * MOVE_SPEED)] == 0) posY += dirY * MOVE_SPEED;
+            if (map[(int) (posX + dirX * MOVE_SPEED)][(int) (posY)].getType() == 0) posX += dirX * MOVE_SPEED;
+            if (map[(int) (posX)][(int) (posY + dirY * MOVE_SPEED)].getType() == 0) posY += dirY * MOVE_SPEED;
         }
-        if(backward){
-            if(map[(int)(posX - dirX * MOVE_SPEED)][(int)(posY)] == 0) posX -= dirX * MOVE_SPEED;
-            if(map[(int)(posX)][(int)(posY - dirY * MOVE_SPEED)] == 0) posY -= dirY * MOVE_SPEED;
+        if (backward) {
+            if (map[(int) (posX - dirX * MOVE_SPEED)][(int) (posY)].getType() == 0) posX -= dirX * MOVE_SPEED;
+            if (map[(int) (posX)][(int) (posY - dirY * MOVE_SPEED)].getType() == 0) posY -= dirY * MOVE_SPEED;
         }
 
-        if(right){
+        if (right) {
             dirX = oldDirX * Math.cos(Math.toRadians(ROTATION_SPEED)) - oldDirY * Math.sin(Math.toRadians(ROTATION_SPEED));
             dirY = oldDirX * Math.sin(Math.toRadians(ROTATION_SPEED)) + oldDirY * Math.cos(Math.toRadians(ROTATION_SPEED));
             planeX = oldPlaneX * Math.cos(Math.toRadians(ROTATION_SPEED)) - oldPlaneY * Math.sin(Math.toRadians(ROTATION_SPEED));
             planeY = oldPlaneX * Math.sin(Math.toRadians(ROTATION_SPEED)) + oldPlaneY * Math.cos(Math.toRadians(ROTATION_SPEED));
         }
-        if(left){
+        if (left) {
             dirX = oldDirX * Math.cos(Math.toRadians(-ROTATION_SPEED)) - oldDirY * Math.sin(Math.toRadians(-ROTATION_SPEED));
             dirY = oldDirX * Math.sin(Math.toRadians(-ROTATION_SPEED)) + oldDirY * Math.cos(Math.toRadians(-ROTATION_SPEED));
             planeX = oldPlaneX * Math.cos(Math.toRadians(-ROTATION_SPEED)) - oldPlaneY * Math.sin(Math.toRadians(-ROTATION_SPEED));

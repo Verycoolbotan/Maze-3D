@@ -12,7 +12,7 @@ public class MainThread extends JFrame implements Runnable {
 
     private int screenWidth, screenHeight;
 
-    private int[][] map;
+    private Cell[][] map;
 
     /*Если заливать стены сплошным цветом, то достаточно просто
     * рисовать на экране вертикальные линии нужной высоты, независимо
@@ -22,7 +22,7 @@ public class MainThread extends JFrame implements Runnable {
     private BufferedImage image;
     public int[] buffer;
 
-    public MainThread(int screenWidth, int screenHeight){
+    public MainThread(int screenWidth, int screenHeight) {
         super("Maze 3D");
 
         this.screenWidth = screenWidth;
@@ -30,13 +30,11 @@ public class MainThread extends JFrame implements Runnable {
 
         //Я не использую альфа-канал, но это модель по умолчанию
         image = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
-        buffer = ((DataBufferInt)(image.getData()).getDataBuffer()).getData();
+        buffer = ((DataBufferInt) (image.getData()).getDataBuffer()).getData();
         camera = new Camera(1.5, 1.5, screenWidth, screenHeight);
         isRunning = true;
 
-        Generator.generate(10, 10);
-        map = Generator.toArray();
-
+        map = Generator.generate(11, 11);
 
         addKeyListener(camera);
 
@@ -55,9 +53,9 @@ public class MainThread extends JFrame implements Runnable {
     * Сначала мы рисуем в буфере, а затем этот буфер выводится на экран.
     * Это позволяет заметно увеличить плавность отрисовки, а если стены
     * текстурированы, то без буфера не обойтись*/
-    private void redraw(){
+    private void redraw() {
         BufferStrategy strategy = getBufferStrategy();
-        if(strategy == null){
+        if (strategy == null) {
             createBufferStrategy(2);
         }
         Graphics g = strategy.getDrawGraphics();
@@ -72,30 +70,30 @@ public class MainThread extends JFrame implements Runnable {
         final int frameTime = 1000 / 60;
 
         //TODO: Оптимизировать цикл, добавить пропуск кадров
-        while(isRunning){
+        while (isRunning) {
             start = System.currentTimeMillis();
 
-            try{
+            try {
                 camera.update(map);
                 redraw();
-            } catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
             sleepTime = start + frameTime - System.currentTimeMillis();
             //System.out.println(sleepTime);
 
-            if(sleepTime > 0){
-                try{
+            if (sleepTime > 0) {
+                try {
                     Thread.sleep(sleepTime);
-                } catch(InterruptedException e){
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
 
-    public static void main(String args[]){
+    public static void main(String args[]) {
         MainThread thread = new MainThread(1280, 720);
     }
 }

@@ -22,7 +22,7 @@ public class Texture {
         return data;
     }
 
-    public static ArrayList<int[]> getTextures(String path){
+    public static ArrayList<int[]> getTextures(String path) {
         BufferedImage source = null;
         ArrayList<int[]> textures = new ArrayList<int[]>();
         try {
@@ -34,7 +34,7 @@ public class Texture {
         int width = source.getWidth();
         int height = source.getHeight();
 
-        for(int i = 0; i < (width / height); i++){
+        for (int i = 0; i < (width / height); i++) {
             textures.add(load(source, i));
         }
         return textures;

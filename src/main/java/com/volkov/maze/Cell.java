@@ -3,68 +3,53 @@ package com.volkov.maze;
 import java.util.ArrayList;
 import java.util.Collections;
 
+//Класс упрощает обмен данными о состоянии клетки в лабиринте
 public class Cell {
-    public static final int FREE = 0;
-    public static final int CONNECTED = 1;
-    public static final int ADDED = 2;
+    public static final int VISITED = 1;
+    public static final int NOT_VISITED = 0;
 
-    private int x, y;
-    private boolean rightWall;
-    private boolean downWall;
+    private int y, x;
+    private int type;
     private int status;
 
-    public Cell(int x, int y){
-        this.x = x;
+    public Cell(int y, int x, int type){
         this.y = y;
-        this.rightWall = true;
-        this.downWall = true;
-        this.status = FREE;
-    }
-
-    public ArrayList<Cell> getNeighbours(Cell[][] map){
-        //У крайних и угловых клеток меньше соседей
-        ArrayList<Cell> neighbours = new ArrayList<Cell>();
-
-        if(this.x > 0) neighbours.add(map[this.y][this.x - 1]);
-        if(this.y > 0) neighbours.add(map[this.y - 1][this.x]);
-        if(this.x < map[0].length - 1) neighbours.add(map[this.y][this.x + 1]);
-        if(this.y < map.length - 1) neighbours.add(map[this.y + 1][this.x]);
-
-
-        Collections.shuffle(neighbours);
-
-        return neighbours;
-    }
-
-    public boolean isDownWall() {
-        return downWall;
-    }
-
-    public boolean isRightWall() {
-        return rightWall;
-    }
-
-    public void setDownWall(boolean downWall) {
-        this.downWall = downWall;
-    }
-
-    public void setRightWall(boolean rightWall) {
-        this.rightWall = rightWall;
-    }
-
-    public int getY() {
-        return y;
+        this.x = x;
+        this.type = type;
+        this.status = NOT_VISITED;
     }
 
     public int getX() {
         return x;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public int getY() {
+        return y;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public int getStatus() {
         return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public ArrayList<Cell> getNeighbours(Cell[][] maze){
+        ArrayList<Cell> neighbours = new ArrayList<Cell>();
+        if(x > 1) neighbours.add(maze[y][x-2]);
+        if(x < (maze[0].length - 2)) neighbours.add(maze[y][x + 2]);
+        if(y > 1) neighbours.add(maze[y - 1][x]);
+        if(y < (maze.length - 2)) neighbours.add(maze[y + 2][x]);
+        Collections.shuffle(neighbours);
+        return neighbours;
     }
 }
