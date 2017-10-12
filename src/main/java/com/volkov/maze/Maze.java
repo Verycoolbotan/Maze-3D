@@ -1,6 +1,6 @@
 package com.volkov.maze;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class Maze {
@@ -29,8 +29,8 @@ public class Maze {
 
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
-                if((i % 2 == 0) || (j % 2 == 0)) maze[i][j] = new Cell(i, j, 1, Cell.VISITED);
-                else maze[i][j] = new Cell(i, j, 0, Cell.UNVISITED);
+                if((i % 2 == 0) || (j % 2 == 0)) maze[i][j] = new Cell(i, j, 1);
+                else maze[i][j] = new Cell(i, j, 0);
             }
         }
 
@@ -42,17 +42,18 @@ public class Maze {
             current = processing.pop();
             System.out.println("Текущая: " + current.toString());
             System.out.println("Клеток в списке: " + processing.size());
-            current.setStatus(Cell.VISITED);
             boolean connected = false;
             for(Cell cell:current.getNeighbours(maze)){
-                if(!connected){
+                if(!connected && cell.getStatus() == Cell.CONNECTED){
                     connect(current, cell, maze);
                     connected = true;
-                } else if(cell.getStatus() == Cell.UNVISITED){
-                    System.out.println("Добавлена в список: " + cell.toString());
+                } else if(cell.getStatus() == Cell.FREE){
+                    cell.setStatus(Cell.ADDED);
                     processing.push(cell);
                 }
             }
+            current.setStatus(Cell.CONNECTED);
+            Collections.shuffle(processing);
         }
 
         for(int i = 0; i < height; i++){
