@@ -35,8 +35,9 @@ public class Maze {
         }
 
         LinkedList<Cell> processing = new LinkedList<Cell>();
-        Cell current;
-        processing.push(maze[1][1]);
+        Cell current = maze[1][1];
+        current.setStatus(Cell.ADDED);
+        processing.push(current);
 
         while(!processing.isEmpty()){
             current = processing.pop();
@@ -58,7 +59,8 @@ public class Maze {
 
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
-                System.out.print(maze[i][j].getType());
+                if(maze[i][j].getType() == 0) System.out.print(" ");
+                else System.out.print("#");
             }
             System.out.println();
         }

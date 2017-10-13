@@ -53,12 +53,12 @@ public class Cell {
     public ArrayList<Cell> getNeighbours(Cell[][] maze){
         ArrayList<Cell> neighbours = new ArrayList<Cell>();
         if(x > 1) neighbours.add(maze[y][x-2]);
-        if(x < (maze[0].length - 2)) neighbours.add(maze[y][x + 2]);
-        if(y > 1) neighbours.add(maze[y - 1][x]);
+        if(x < (maze[0].length - 3)) neighbours.add(maze[y][x + 2]);
+        if(y > 1) neighbours.add(maze[y - 2][x]);
         if(y < (maze.length - 3)) neighbours.add(maze[y + 2][x]);
         Collections.shuffle(neighbours);
 
-        for(Cell cell:neighbours) System.out.println(cell.toString());
+        //for(Cell cell:neighbours) System.out.println(cell.toString());
         return neighbours;
     }
 }
