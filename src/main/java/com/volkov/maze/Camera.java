@@ -184,8 +184,6 @@ public class Camera implements KeyListener {
             backward = true;
         if ((e.getKeyCode() == KeyEvent.VK_D))
             right = true;
-        if ((e.getKeyCode() == KeyEvent.VK_H))
-            path = Maze.findPath(new Cell(1, 1, 0), new Cell(19, 19, 0));
     }
 
     public void keyReleased(KeyEvent e) {

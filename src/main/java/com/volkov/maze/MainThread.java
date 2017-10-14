@@ -83,7 +83,6 @@ public class MainThread extends JFrame implements Runnable {
             }
 
             sleepTime = start + frameTime - System.currentTimeMillis();
-            //System.out.println(sleepTime);
 
             if (sleepTime > 0) {
                 try {

@@ -50,6 +50,8 @@ public class Cell {
         this.status = status;
     }
 
+    /*Возвращает список соседей в заданном радиусе. Может понадобиться для поиска пути.
+    * Иначе убрать параметр rad*/
     public ArrayList<Cell> getNeighbours(Cell[][] maze, int rad) {
         ArrayList<Cell> neighbours = new ArrayList<Cell>();
         if (x > 1) neighbours.add(maze[y][x - rad]);
@@ -57,8 +59,6 @@ public class Cell {
         if (y > 1) neighbours.add(maze[y - rad][x]);
         if (y < (maze.length - (rad + 1))) neighbours.add(maze[y + rad][x]);
         Collections.shuffle(neighbours);
-        System.out.println("Соседи:");
-        for(Cell cell:neighbours) System.out.println(cell.toString());
         return neighbours;
     }
 }

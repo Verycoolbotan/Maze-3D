@@ -1,6 +1,8 @@
 package com.volkov.maze;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Maze {
@@ -22,9 +24,9 @@ public class Maze {
                 maze[one.getY() - 1][one.getX()].setType(0);
             }
         }
-        System.out.println("Соединены: " + one.toString() + ", " + two.toString());
     }
 
+    //Может использоваться для выбора начала обхода при генерации. Возвращает случайное целое на отрезке [a, b]
     private static int random(int a, int b) {
         return (int) (Math.random() * (b - a + 1) + a);
     }
@@ -42,7 +44,7 @@ public class Maze {
     * добавление в начало/конец списка меняет вид лабиринта,
     * можно перемешивать список обрабатываемых клеток или список соседей
     * (включено по умолчанию, т.к. иначе наблюдаем "предвзятость" - генерацию
-    * неприлично длинных вертикальных/горизонтальных коридоров)*/
+    * преимущественно вертикальных/горизонтальных коридоров)*/
     public static Cell[][] generate(int width, int height) {
         maze = new Cell[height][width];
 
@@ -62,8 +64,6 @@ public class Maze {
 
         while (!processing.isEmpty()) {
             current = processing.pop();
-            System.out.println("Текущая: " + current.toString());
-            System.out.println("Клеток в списке: " + processing.size());
             boolean connected = false;
             for (Cell cell : current.getNeighbours(maze, 2)) {
                 if (!connected && cell.getStatus() == Cell.CONNECTED) {
@@ -86,42 +86,46 @@ public class Maze {
             }
             System.out.println();
         }
-
         return maze;
     }
 
-    //Поиск пути обходом списка. Принцип похож на генерацию
+    /*Поиск пути
+    * Я долго не мог выбрать между А* и обходом в ширину,
+    * но таки выбрал обход в ширину.
+    * Главная проблема: получить размеры лабиринта, ибо всё
+    * прописано в Camera и MainThread. Поля первого не являются
+    * статическими, логика второго прописана в конструкторе и методе run.
+    * Надо подумать...*/
     public static LinkedList<Cell> findPath(Cell start, Cell end) {
-        //Делаем клетки непосещёнными
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[0].length; j++) {
-                maze[i][j].setStatus(Cell.FREE);
-            }
-        }
+        LinkedList<Cell> front = new LinkedList<Cell>();
+        front.add(start);
+        //Ключ - текущая клетка. Значение - предыдущая клетка
+        HashMap<Cell, Cell> cameFrom = new HashMap<Cell, Cell>();
+        //Логично. Начало же
+        cameFrom.put(start, null);
+        Cell current;
 
-        System.out.println("Ищу путь");
-
-        LinkedList<Cell> path = new LinkedList<Cell>();
-        Cell current = start;
-        current.setStatus(Cell.ADDED);
-
-        int sum = 0;
-
-        while (!current.equals(end)) {
-            System.out.println("Текущая: " + current.toString());
-            System.out.println("Пройдено: " + sum);
-            for (Cell cell : current.getNeighbours(maze, 1)) {
-                if (cell.getType() == 0 && cell.getStatus() == Cell.FREE) {
-                    path.push(current);
-                    current = cell;
-                    current.setStatus(Cell.ADDED);
-                    sum++;
-                } else if (!path.isEmpty()) {
-                    current = path.pop();
+        /*Очередь cameFrom хранит направление к стартовой клетке,
+        * т.е. пути ещё нет, но его можно получить, двигаясь "по стрелкам"
+        * от выхода к началу*/
+        while (!front.isEmpty()) {
+            current = front.poll();
+            for (Cell next : current.getNeighbours(maze, 1)) {
+                if (!cameFrom.containsKey(next)) {
+                    front.add(next);
+                    cameFrom.put(next, current);
                 }
             }
         }
 
+        current = end;
+        LinkedList<Cell> path = new LinkedList<Cell>();
+        path.add(current);
+
+        while (!current.equals(start)) {
+            current = cameFrom.get(current);
+            path.add(current);
+        }
         return path;
     }
 }
