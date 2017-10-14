@@ -34,7 +34,9 @@ public class MainThread extends JFrame implements Runnable {
         camera = new Camera(1.5, 1.5, screenWidth, screenHeight);
         isRunning = true;
 
-        map = Maze.generate(11, 11);
+        map = Maze.generate(21, 21);
+
+        //Maze.findPath(map[1][1], map[19][19]);
 
         addKeyListener(camera);
 

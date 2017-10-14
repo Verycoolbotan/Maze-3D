@@ -14,7 +14,7 @@ public class Cell {
     private int type;
     private int status;
 
-    public Cell(int y, int x, int type){
+    public Cell(int y, int x, int type) {
         this.y = y;
         this.x = x;
         this.type = type;
@@ -22,7 +22,7 @@ public class Cell {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "(" + y + ", " + x + ")";
     }
 
@@ -50,15 +50,15 @@ public class Cell {
         this.status = status;
     }
 
-    public ArrayList<Cell> getNeighbours(Cell[][] maze){
+    public ArrayList<Cell> getNeighbours(Cell[][] maze, int rad) {
         ArrayList<Cell> neighbours = new ArrayList<Cell>();
-        if(x > 1) neighbours.add(maze[y][x-2]);
-        if(x < (maze[0].length - 3)) neighbours.add(maze[y][x + 2]);
-        if(y > 1) neighbours.add(maze[y - 2][x]);
-        if(y < (maze.length - 3)) neighbours.add(maze[y + 2][x]);
+        if (x > 1) neighbours.add(maze[y][x - rad]);
+        if (x < (maze[0].length - (rad + 1))) neighbours.add(maze[y][x + rad]);
+        if (y > 1) neighbours.add(maze[y - rad][x]);
+        if (y < (maze.length - (rad + 1))) neighbours.add(maze[y + rad][x]);
         Collections.shuffle(neighbours);
-
-        //for(Cell cell:neighbours) System.out.println(cell.toString());
+        System.out.println("Соседи:");
+        for(Cell cell:neighbours) System.out.println(cell.toString());
         return neighbours;
     }
 }

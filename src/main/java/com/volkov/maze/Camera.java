@@ -3,6 +3,7 @@ package com.volkov.maze;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Camera implements KeyListener {
     //TODO: Сделать скорости зависимыми от времени отрисовки
@@ -12,6 +13,8 @@ public class Camera implements KeyListener {
     private double posX, posY, dirX, dirY, planeX, planeY;
     private int screenWidth, screenHeight;
     private boolean forward, backward, left, right;
+
+    private LinkedList<Cell> path;
 
     public Camera(double posX, double posY, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
@@ -181,8 +184,8 @@ public class Camera implements KeyListener {
             backward = true;
         if ((e.getKeyCode() == KeyEvent.VK_D))
             right = true;
-        /*if ((e.getKeyCode() == KeyEvent.VK_H))
-            PathFinder.findPath();*/
+        if ((e.getKeyCode() == KeyEvent.VK_H))
+            path = Maze.findPath(new Cell(1, 1, 0), new Cell(19, 19, 0));
     }
 
     public void keyReleased(KeyEvent e) {
