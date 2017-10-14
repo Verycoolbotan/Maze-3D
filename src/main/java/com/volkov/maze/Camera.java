@@ -9,18 +9,23 @@ public class Camera implements KeyListener {
     //TODO: Сделать скорости зависимыми от времени отрисовки
     private final double MOVE_SPEED = 0.05;
     private final double ROTATION_SPEED = 5;
+
     ArrayList<int[]> textures;
     private double posX, posY, dirX, dirY, planeX, planeY;
     private int screenWidth, screenHeight;
     private boolean forward, backward, left, right;
 
+    private int mapHeight, mapWidth;
+
     private LinkedList<Cell> path;
 
-    public Camera(double posX, double posY, int screenWidth, int screenHeight) {
+    public Camera(double posX, double posY, int screenWidth, int screenHeight, int mapHeight, int mapWidth) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.posX = posX;
         this.posY = posY;
+        this.mapHeight = mapHeight;
+        this.mapWidth = mapWidth;
         dirX = 1;
         dirY = 0;
         planeX = 0;
@@ -184,6 +189,37 @@ public class Camera implements KeyListener {
             backward = true;
         if ((e.getKeyCode() == KeyEvent.VK_D))
             right = true;
+        if ((e.getKeyCode() == KeyEvent.VK_H)){
+            //TODO: добавить плавный поворот
+            Cell current = new Cell((int)(posY), (int)(posX), 0);
+            LinkedList<Cell> path = Maze.findPath(current, new Cell(mapHeight - 1, mapWidth - 1, 0));
+            Cell tmp = path.poll();
+
+            if(tmp.getY() > current.getY()){
+                dirY = 1;
+                dirX = 0;
+                planeX = 1;
+                planeY = 0;
+            } else {
+                dirX = 0;
+                dirY = -1;
+                planeX = -1;
+                planeY = 0;
+            }
+
+            if(tmp.getX() > current.getX()){
+                dirX = 1;
+                dirY = 0;
+                planeX = 0;
+                planeY = 1;
+            } else {
+                dirX = -1;
+                dirY = 0;
+                planeX = 0;
+                planeY = -1;
+            }
+        }
+
     }
 
     public void keyReleased(KeyEvent e) {
@@ -214,6 +250,7 @@ public class Camera implements KeyListener {
             if (map[(int) (posX)][(int) (posY - dirY * MOVE_SPEED)].getType() == 0) posY -= dirY * MOVE_SPEED;
         }
 
+        //TODO: вынести этот ужас в отдельный метод
         if (right) {
             dirX = oldDirX * Math.cos(Math.toRadians(ROTATION_SPEED)) - oldDirY * Math.sin(Math.toRadians(ROTATION_SPEED));
             dirY = oldDirX * Math.sin(Math.toRadians(ROTATION_SPEED)) + oldDirY * Math.cos(Math.toRadians(ROTATION_SPEED));

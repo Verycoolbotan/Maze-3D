@@ -78,6 +78,9 @@ public class Maze {
             Collections.shuffle(processing);
         }
 
+        maze[height - 1][width - 2].setType(2);
+        maze[height - 2][width - 1].setType(2);
+
         //Отладочная печать: план лабиринта при взгляде "сверху"
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -91,18 +94,14 @@ public class Maze {
 
     /*Поиск пути
     * Я долго не мог выбрать между А* и обходом в ширину,
-    * но таки выбрал обход в ширину.
-    * Главная проблема: получить размеры лабиринта, ибо всё
-    * прописано в Camera и MainThread. Поля первого не являются
-    * статическими, логика второго прописана в конструкторе и методе run.
-    * Надо подумать...*/
+    * но таки выбрал обход в ширину*/
     public static LinkedList<Cell> findPath(Cell start, Cell end) {
         LinkedList<Cell> front = new LinkedList<Cell>();
         front.add(start);
         //Ключ - текущая клетка. Значение - предыдущая клетка
         HashMap<Cell, Cell> cameFrom = new HashMap<Cell, Cell>();
         //Логично. Начало же
-        cameFrom.put(start, null);
+        cameFrom.put(start, start);
         Cell current;
 
         /*Очередь cameFrom хранит направление к стартовой клетке,

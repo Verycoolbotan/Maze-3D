@@ -22,7 +22,7 @@ public class MainThread extends JFrame implements Runnable {
     private BufferedImage image;
     public int[] buffer;
 
-    public MainThread(int screenWidth, int screenHeight) {
+    public MainThread(int screenWidth, int screenHeight, int mapHeight, int mapWidth) {
         super("Maze 3D");
 
         this.screenWidth = screenWidth;
@@ -31,12 +31,10 @@ public class MainThread extends JFrame implements Runnable {
         //Я не использую альфа-канал, но это модель по умолчанию
         image = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         buffer = ((DataBufferInt) (image.getData()).getDataBuffer()).getData();
-        camera = new Camera(1.5, 1.5, screenWidth, screenHeight);
+        camera = new Camera(1.5, 1.5, screenWidth, screenHeight, mapHeight, mapWidth);
         isRunning = true;
 
-        map = Maze.generate(21, 21);
-
-        //Maze.findPath(map[1][1], map[19][19]);
+        map = Maze.generate(mapWidth, mapHeight);
 
         addKeyListener(camera);
 
@@ -95,6 +93,6 @@ public class MainThread extends JFrame implements Runnable {
     }
 
     public static void main(String args[]) {
-        MainThread thread = new MainThread(1280, 720);
+        MainThread thread = new MainThread(1280, 720, 11, 11);
     }
 }
