@@ -26,6 +26,30 @@ public class Cell {
         return "(" + y + ", " + x + ")";
     }
 
+    /*ВАЖНО: для нормальной работы с коллекциями (а именно с HashMap)
+    * и корректного сравнения необходимо переопределить методы
+    * equals и hashCode*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Cell cell = (Cell) o;
+
+        if (y != cell.y) return false;
+        if (x != cell.x) return false;
+        return type == cell.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = y;
+        result = 31 * result + x;
+        result = 31 * result + type;
+        return result;
+    }
+
     public int getX() {
         return x;
     }
@@ -50,14 +74,21 @@ public class Cell {
         this.status = status;
     }
 
-    /*Возвращает список соседей в заданном радиусе. Может понадобиться для поиска пути.
-    * Иначе убрать параметр rad*/
-    public ArrayList<Cell> getNeighbours(Cell[][] maze, int rad) {
+    /*Возвращает список соседей в заданном радиусе rad. Используется для генерации и поиска пути.
+    * Параметр checkType позволяет включтить/отключить добавление ТОЛЬКО свободных клеток*/
+    public ArrayList<Cell> getNeighbours(Cell[][] maze, int rad, boolean checkType) {
         ArrayList<Cell> neighbours = new ArrayList<Cell>();
-        if (x > 1) neighbours.add(maze[y][x - rad]);
-        if (x < (maze[0].length - (rad + 1))) neighbours.add(maze[y][x + rad]);
-        if (y > 1) neighbours.add(maze[y - rad][x]);
-        if (y < (maze.length - (rad + 1))) neighbours.add(maze[y + rad][x]);
+        if (checkType) {
+            if ((x > 1) && (maze[y][x - rad].getType() == 0)) neighbours.add(maze[y][x - rad]);
+            if ((x < (maze[0].length - (rad + 1))) && (maze[y][x + rad].getType() == 0)) neighbours.add(maze[y][x + rad]);
+            if ((y > 1) && (maze[y - rad][x].getType() == 0)) neighbours.add(maze[y - rad][x]);
+            if ((y < (maze.length - (rad + 1))) && (maze[y + rad][x].getType() == 0)) neighbours.add(maze[y + rad][x]);
+        } else {
+            if (x > 1) neighbours.add(maze[y][x - rad]);
+            if (x < (maze[0].length - (rad + 1))) neighbours.add(maze[y][x + rad]);
+            if (y > 1) neighbours.add(maze[y - rad][x]);
+            if (y < (maze.length - (rad + 1))) neighbours.add(maze[y + rad][x]);
+        }
         Collections.shuffle(neighbours);
         return neighbours;
     }

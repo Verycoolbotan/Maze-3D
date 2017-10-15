@@ -1,6 +1,5 @@
 package com.volkov.maze;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -65,7 +64,8 @@ public class Maze {
         while (!processing.isEmpty()) {
             current = processing.pop();
             boolean connected = false;
-            for (Cell cell : current.getNeighbours(maze, 2)) {
+            //В данном случае нас интересуют ТОЛЬКО СТЕНЫ
+            for (Cell cell : current.getNeighbours(maze, 2, false)) {
                 if (!connected && cell.getStatus() == Cell.CONNECTED) {
                     connect(current, cell, maze);
                     connected = true;
@@ -109,7 +109,8 @@ public class Maze {
         * от выхода к началу*/
         while (!front.isEmpty()) {
             current = front.poll();
-            for (Cell next : current.getNeighbours(maze, 1)) {
+            //А тут нам нужны ТОЛЬКО те клетки, по которым МОЖНО ПРОЙТИ
+            for (Cell next : current.getNeighbours(maze, 1, true)) {
                 if (!cameFrom.containsKey(next)) {
                     front.add(next);
                     cameFrom.put(next, current);
@@ -125,6 +126,7 @@ public class Maze {
             current = cameFrom.get(current);
             path.add(current);
         }
+        path.poll();
         return path;
     }
 }

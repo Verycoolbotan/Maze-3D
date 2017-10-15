@@ -189,30 +189,30 @@ public class Camera implements KeyListener {
             backward = true;
         if ((e.getKeyCode() == KeyEvent.VK_D))
             right = true;
-        if ((e.getKeyCode() == KeyEvent.VK_H)){
+        if ((e.getKeyCode() == KeyEvent.VK_H)) {
             //TODO: добавить плавный поворот
-            Cell current = new Cell((int)(posY), (int)(posX), 0);
-            LinkedList<Cell> path = Maze.findPath(current, new Cell(mapHeight - 1, mapWidth - 1, 0));
+            Cell current = new Cell((int) (posY), (int) (posX), 0);
+            LinkedList<Cell> path = Maze.findPath(current, new Cell(mapHeight - 2, mapWidth - 2, 0));
             Cell tmp = path.poll();
 
-            if(tmp.getY() > current.getY()){
+            if (tmp.getY() > current.getY()) {
                 dirY = 1;
                 dirX = 0;
-                planeX = 1;
+                planeX = -1;
                 planeY = 0;
-            } else {
+            } else if (tmp.getY() < current.getY()) {
                 dirX = 0;
                 dirY = -1;
-                planeX = -1;
+                planeX = 1;
                 planeY = 0;
             }
 
-            if(tmp.getX() > current.getX()){
+            if (tmp.getX() > current.getX()) {
                 dirX = 1;
                 dirY = 0;
                 planeX = 0;
                 planeY = 1;
-            } else {
+            } else if (tmp.getX() < current.getX()) {
                 dirX = -1;
                 dirY = 0;
                 planeX = 0;
