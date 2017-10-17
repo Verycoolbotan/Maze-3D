@@ -80,7 +80,8 @@ public class Cell {
         ArrayList<Cell> neighbours = new ArrayList<Cell>();
         if (checkType) {
             if ((x > 1) && (maze[y][x - rad].getType() == 0)) neighbours.add(maze[y][x - rad]);
-            if ((x < (maze[0].length - (rad + 1))) && (maze[y][x + rad].getType() == 0)) neighbours.add(maze[y][x + rad]);
+            if ((x < (maze[0].length - (rad + 1))) && (maze[y][x + rad].getType() == 0))
+                neighbours.add(maze[y][x + rad]);
             if ((y > 1) && (maze[y - rad][x].getType() == 0)) neighbours.add(maze[y - rad][x]);
             if ((y < (maze.length - (rad + 1))) && (maze[y + rad][x].getType() == 0)) neighbours.add(maze[y + rad][x]);
         } else {

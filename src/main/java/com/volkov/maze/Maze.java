@@ -126,7 +126,14 @@ public class Maze {
             current = cameFrom.get(current);
             path.add(current);
         }
-        path.poll();
+        if (!path.isEmpty()) path.pollLast();
+
+        for (Cell cell : path){
+            for (Cell c : cell.getNeighbours(maze, 1, false)){
+                if (c.getType() != 0) c.setType(3);
+            }
+        }
+
         return path;
     }
 }

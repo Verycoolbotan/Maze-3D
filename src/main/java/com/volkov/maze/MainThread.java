@@ -93,6 +93,6 @@ public class MainThread extends JFrame implements Runnable {
     }
 
     public static void main(String args[]) {
-        MainThread thread = new MainThread(1280, 720, 11, 11);
+        MainThread thread = new MainThread(1280, 720, 51, 51);
     }
 }
