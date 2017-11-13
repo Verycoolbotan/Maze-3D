@@ -150,6 +150,9 @@ public class Camera implements KeyListener {
             if (side == 0 && rayDirX > 0) texX = texWH - texX - 1;
             if (side == 1 && rayDirY < 0) texX = texWH - texX - 1;
 
+            //Добавим туман
+
+
             for (int y = drawStart; y < drawEnd; y++) {
                 /*Сопоставляем каждой точке столбца экранв точку текстуры
                 * Существуют более компактные целочисленные реализации,
